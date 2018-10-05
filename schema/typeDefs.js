@@ -1,6 +1,13 @@
 const Agent = `
   type Agent {
-    key: ID
+    key: ID!
+    name: String
+    type: String
+    image: String
+    note: Note
+    primaryLocation: Place
+    primaryPhone: String
+    email: String
   }
 `
 
