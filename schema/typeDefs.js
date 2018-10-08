@@ -125,9 +125,9 @@ const EconomicEvent = `
     action: String!
     inputOf: Process
     outputOf: Process
-    provider: ID
-    receiver: ID
-    scope: ID
+    provider: Agent
+    receiver: Agent
+    scope: Agent
     affects: [EconomicResource]
     affectedQuantity: QuantityValue
     start: String
@@ -141,6 +141,7 @@ const EconomicEvent = `
 
 const Query = `
   type Query {
+    agent(id: String): Agent
     economicEvent(id: String!): EconomicEvent
     economicEvents: [EconomicEvent]
   }
@@ -148,7 +149,19 @@ const Query = `
 
 const Mutation = `
   input economicEventInput {
-    key: ID!
+    action: String!
+    inputOf: String
+    outputOf: String
+    provider: String
+    receiver: String
+    scope: String
+    affects: String
+    affectedQuantity: Int
+    start: String
+    url: String
+    requestDistribution: Boolean
+    note: String
+    fulfills: String
   }
   type Mutation {
     publishEconomicEvent(input: economicEventInput): EconomicEvent
@@ -170,7 +183,7 @@ module.exports = [
   ProcessClassification,
   Agent,
   Place,
-  Commit,
+  Commitment,
   EconomicResource,
   ResourceClassification,
   QuantityValue,
@@ -178,4 +191,5 @@ module.exports = [
   Fulfillment,
   Commitment,
   Plan,
+  Note,
 ]
