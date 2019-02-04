@@ -6,7 +6,7 @@ const {
   message,
   getMessagesByType,
   get,
-} = require('../../ssb-helpers')
+} = require('ssb-helpers')
 
 const resourceClassficationType = 'resourceClassificationTest2'
 const economicResourceType = 'economicResourceTest2'
