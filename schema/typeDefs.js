@@ -5,8 +5,8 @@ const Agent = `
     type: String
     image: String
     note: Note
-    primaryLocation: Place
-    primaryPhone: String
+    location: Place
+    phone: String
     email: String
   }
 `
@@ -99,23 +99,31 @@ const QuantityValue = `
 
 const ResourceClassification = `
   type ResourceClassification {
+    key: ID!
     image: String
     note: Note
     category: String
     processCategory: String
   }
 `
-
 const EconomicResource = `
+  type Price {
+    currency: String
+    value: Int
+  }
   type EconomicResource {
+    key: ID!
     resourceClassifiedAs: ResourceClassification
     trackingIdentifier: String
     image: String
-    currentQuantity: QuantityValue
+    currentQuantity: Int
+    quantityUnit: String
     note: Note
     category: String
     currentLocation: Place
     createdDate: String
+    currentOwner: String
+    prices: [Price]
   }
 `
 
@@ -127,7 +135,7 @@ const EconomicEvent = `
     outputOf: Process
     provider: Agent
     receiver: Agent
-    scope: Agent
+    scope: [Agent]
     affects: [EconomicResource]
     affectedQuantity: QuantityValue
     start: String
@@ -142,12 +150,22 @@ const EconomicEvent = `
 const Query = `
   type Query {
     agent(id: String): Agent
+    resourceClassifications: [ResourceClassification]
+    economicResource(id: String!): EconomicResource
+    publishedResources: [EconomicResource]
+    economicResources: [EconomicResource]
     economicEvent(id: String!): EconomicEvent
     economicEvents: [EconomicEvent]
   }
 `
 
 const Mutation = `
+  input resourceClassificationInput {
+    image: String
+    note: String
+    category: String
+    processCategory: String
+  }
   input economicEventInput {
     action: String!
     inputOf: String
@@ -155,7 +173,7 @@ const Mutation = `
     provider: String
     receiver: String
     scope: String
-    affects: String
+    affects: [String]
     affectedQuantity: Int
     start: String
     url: String
@@ -163,7 +181,21 @@ const Mutation = `
     note: String
     fulfills: String
   }
+  input economicResourceInput {
+    resourceClassifiedAs: String
+    trackingIdentifier: String
+    image: String
+    currentQuantity: Int
+    quantityUnit: String
+    currentOwner: String
+    note: String
+    currentLocation: String
+    prices: [String]
+  }
   type Mutation {
+    publishResourceClassification(input: resourceClassificationInput): ResourceClassification
+    publishEconomicResource(input: economicResourceInput): EconomicResource
+    unpublishEconomicResource(id: String!): EconomicResource
     publishEconomicEvent(input: economicEventInput): EconomicEvent
   }
 `
