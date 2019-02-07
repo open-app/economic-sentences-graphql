@@ -92,8 +92,8 @@ const Unit = `
 `
 const QuantityValue = `
   type QuantityValue {
-    numericValue: String!
     unit: Unit
+    value: String!
   }
 `
 
@@ -152,7 +152,6 @@ const Query = `
     agent(id: String): Agent
     resourceClassifications: [ResourceClassification]
     economicResource(id: String!): EconomicResource
-    publishedResources: [EconomicResource]
     economicResources: [EconomicResource]
     economicEvent(id: String!): EconomicEvent
     economicEvents: [EconomicEvent]
@@ -195,7 +194,6 @@ const Mutation = `
   type Mutation {
     publishResourceClassification(input: resourceClassificationInput): ResourceClassification
     publishEconomicResource(input: economicResourceInput): EconomicResource
-    unpublishEconomicResource(id: String!): EconomicResource
     publishEconomicEvent(input: economicEventInput): EconomicEvent
   }
 `

@@ -8,9 +8,9 @@ const {
   get,
 } = require('ssb-helpers')
 
-const resourceClassficationType = 'resourceClassificationTest2'
-const economicResourceType = 'economicResourceTest2'
-const economicEventType = 'economicEventTest2'
+const resourceClassficationType = 'vf:resourceClassificationAlpha'
+const economicResourceType = 'vf:economicResourceAlpha'
+const economicEventType = 'vf:economicEventAlpha'
 
 const getResourceClassfication = async (id, sbot) => {
   const resourceClassification = await message({ id }, sbot)
@@ -60,39 +60,18 @@ const Query = {
   economicResources: async (_, {}, { sbot }) => {
     const msgs = await getMessagesByType({ type: economicResourceType }, sbot)
     const formated = msgs.map(async msg => {
-      const resourceClassifiedAs = await getResourceClassfication(msg.value.content.resourceClassifiedAs, sbot)
+      const resourceClassifiedAs = msg.value.content.resourceClassifiedAs
       const prices = getPrices(msg.value.content.prices)
       return Object.assign(
         msg.value.content,
-        {key: msg.key, resourceClassifiedAs, prices},
+        {
+          key: msg.key,
+          resourceClassifiedAs: resourceClassifiedAs ? await getResourceClassfication(resourceClassifiedAs, sbot) : null,
+          prices,
+        },
       )
     })
     return formated
-  },
-  publishedResources: async (_, {}, { sbot }) => {
-    const msgs = await getMessagesByType({ type: economicResourceType }, sbot)
-    const unpublished = msgs
-      .filter(msg => typeof(msg.value.content.link) === 'string')
-      .map(msg => msg.value.content.link)
-    const filtered = msgs
-      .filter(msg => msg.value.content.prices.length > 0)
-      .filter(msg => {
-        let isUnpublished
-        unpublished.map(un => {
-          if (msg.key === un) isUnpublished = true
-        })
-        if (isUnpublished) return false
-        return true
-      })
-    console.log('filtered', filtered)
-    return filtered.map(async msg => {
-      const resourceClassifiedAs = await getResourceClassfication(msg.value.content.resourceClassifiedAs, sbot)
-      const prices = getPrices(msg.value.content.prices)
-      return Object.assign(
-        msg.value.content,
-        {key: msg.key, resourceClassifiedAs, prices},
-      )
-    })
   },
   economicEvent: async (id, { sbot }) => {
     get(id)
@@ -137,13 +116,6 @@ const Mutation = {
       .then(msg => Object.assign(
         msg.value.content,
         { key: msg.key, resourceClassifiedAs, prices },
-      ))
-  },
-  unpublishEconomicResource: async (_, { id }, { sbot }) => {
-    return publish({ type: economicResourceType, prices: [], link: id }, sbot)
-      .then(msg => Object.assign(
-        msg.value.content,
-        { key: msg.key },
       ))
   },
   publishEconomicEvent: async (_, { input }, { sbot }) => {
