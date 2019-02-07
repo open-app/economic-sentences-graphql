@@ -58,7 +58,7 @@ const Commitment = `
     outputOf: Process
     provider: Agent
     receiver: Agent
-    scope: Agent
+    scope: String
     resourceClassifiedAs: ResourceClassification
     involves: EconomicResource
     committedQuantity: QuantityValue
@@ -124,6 +124,7 @@ const EconomicResource = `
     createdDate: String
     currentOwner: String
     prices: [Price]
+    scope: String
   }
 `
 
@@ -135,7 +136,7 @@ const EconomicEvent = `
     outputOf: Process
     provider: Agent
     receiver: Agent
-    scope: [Agent]
+    scope: String
     affects: [EconomicResource]
     affectedQuantity: QuantityValue
     start: String
